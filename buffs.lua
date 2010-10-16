@@ -60,6 +60,7 @@ function f:ADDON_LOADED(msg)
 	for k, v in pairs({
 		flaskTell = "FascistGnome: Flask reminder!",
 		foodTell = "FascistGnome: Well Fed reminder!",
+		expireTell = "FascistGnome: Food/flask expires soon!",
 		whisperAtReadyCheck = true,
 		whisperIfOfficer = true,
 		whisperIfLeader = true,
@@ -92,25 +93,30 @@ local function remind(player, tell)
 end
 
 local nofood, noflask, recheck = {}, {}, {}
-local function inspectUnit(unit)
+local function inspectUnit(unit, time)
 	local flask, food = nil, nil
 	for j = 1, 40 do
-		local name = UnitBuff(unit, j)
+		local name, _, _, _, _, _, exp = UnitBuff(unit, j)
 		if not name then break end
-		if foods[name] then food = true end
-		if flasks[name] then flask = true end
+		local timeLeft = -1 * (time - x) / 60
+		if foods[name] then food = timeLeft end
+		if flasks[name] then flask = timeLeft end
 		if food and flask then break end
 	end
 	return flask, food
 end
 local function inspectRaid()
+	local time = GetTime()
 	for i = 1, GetNumRaidMembers() do
 		local n = GetRaidRosterInfo(i)
 		if n then
-			local flask, food = inspectUnit(n)
+			local flask, food = inspectUnit(n, time)
 			if not food then nofood[#nofood+1] = n end
 			if not flask then noflask[#noflask+1] = n end
 			if not food or not flask then recheck[#recheck+1] = n end
+			if (food and food < 5) or (flask and flask < 5) then
+				remind(n, self.db.expireTell)
+			end
 		end
 	end
 end
@@ -126,7 +132,8 @@ end
 
 function f:READY_CHECK_FINISHED()
 	self:Hide()
-	self:UnregisterEvent("READY_CHECK_FINISHED")	-- Because these can get spammed when you leave raid/group (and because we can call this function due to timeout)
+	-- Because these can get spammed when you leave raid/group (and because we can call this function due to timeout)
+	self:UnregisterEvent("READY_CHECK_FINISHED")
 
 	if not self.db.statusPrintAtReady then return end
 	wipe(nofood); wipe(noflask)
@@ -140,12 +147,11 @@ function f:READY_CHECK_FINISHED()
 end
 
 local rcTimeout = 0
-
-function f:READY_CHECK(sender,timeout)
-
+function f:READY_CHECK(sender, timeout)
 	-- Track timeout locally because officers sometimes don't get the _FINISHED like they should. Yay.
-	rcTimeout = GetTime() + tonumber(timeout) + 1  -- +1 because half the time we get given "29" instead of "30". blizzard strikes again.
-	
+	-- +1 because half the time we get given 29 instead of 30. Blizzard strikes again.
+	rcTimeout = GetTime() + tonumber(timeout) + 1
+
 	self:Show()
 
 	self:RegisterEvent("READY_CHECK_FINISHED")
@@ -165,15 +171,13 @@ function f:READY_CHECK(sender,timeout)
 			end
 		end
 	end
-
 end
 
 local total = 0
 f:Hide()
 f:SetScript("OnHide", function() UIFrameFlashStop(texture) end)
 f:SetScript("OnUpdate", function(self, elapsed)
-
-	if GetTime()>rcTimeout then
+	if GetTime() > rcTimeout then
 		self:READY_CHECK_FINISHED()
 	end
 
@@ -191,7 +195,7 @@ f:RegisterEvent("READY_CHECK")
 f:RegisterEvent("ADDON_LOADED")
 
 local function filter(self, event, msg)
-	if msg == f.db.foodTell or msg == f.db.flaskTell then return true end
+	if msg == f.db.foodTell or msg == f.db.flaskTell or msg == f.db.expireTell then return true end
 end
 ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", filter)
 
