@@ -98,7 +98,7 @@ local function inspectUnit(unit, time)
 	for j = 1, 40 do
 		local name, _, _, _, _, _, exp = UnitBuff(unit, j)
 		if not name then break end
-		local timeLeft = -1 * (time - x) / 60
+		local timeLeft = -1 * (time - exp) / 60
 		if foods[name] then food = timeLeft end
 		if flasks[name] then flask = timeLeft end
 		if food and flask then break end
@@ -137,8 +137,9 @@ function f:READY_CHECK_FINISHED()
 
 	if not self.db.statusPrintAtReady then return end
 	wipe(nofood); wipe(noflask)
+	local t = GetTime()
 	for i, player in next, recheck do
-		local flask, food = inspectUnit(player)
+		local flask, food = inspectUnit(player, t)
 		if not food then nofood[#nofood+1] = coloredNames[player] end
 		if not flask then noflask[#noflask+1] = coloredNames[player] end
 	end
