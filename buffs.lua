@@ -115,7 +115,7 @@ local function inspectRaid()
 			if not flask then noflask[#noflask+1] = n end
 			if not food or not flask then recheck[#recheck+1] = n end
 			if (food and food < 5) or (flask and flask < 5) then
-				remind(n, addon.db.expireTell)
+				remind(n, f.db.expireTell)
 			end
 		end
 	end
