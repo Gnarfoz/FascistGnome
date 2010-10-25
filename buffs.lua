@@ -1,41 +1,25 @@
-local flasks = {
-	-- WotLK Flasks
-	["Flask of Endless Rage"] = true,
-	["Flask of Pure Mojo"] = true,
-	["Flask of Stoneblood"] = true,
-	["Flask of the Frost Wyrm"] = true,
-	["Lesser Flask of Toughness"] = true,
-	["Lesser Flask of Resistance"] = true,
-	-- ["Flask of the North"] = true,   -- NOT! This exists to provide the same passive bonuses as other professions for alchemists. And alchemists get more out of normal flasks to compensate.
+local L = LibStub("AceLocale-3.0"):GetLocale("FascistGnome")
 
-	-- TBC Flasks
-	["Flask of Arcane Fortification"] = true,
-	["Chromatic Resistance"] = true,
-	["Distilled Wisdom"] = true,
-	["Flask of Fortification"] = true,
-	["Flask of Mighty Restoration"] = true,
-	["Flask of Relentless Assault"] = true,
-	["Flask of Shadow Fortification"] = true,
-	["Supreme Power"] = true,
-	["Flask of Pure Death"] = true,
-	["Flask of the Titans"] = true,
-	["Supreme Power of Shattrath"] = true,
-	["Fortification of Shattrath"] = true,
-	["Mighty Restoration of Shattrath"] = true,
-	["Relentless Assault of Shattrath"] = true,
-	["Pure Death of Shattrath"] = true,
-	["Blinding Light of Shattrath"] = true,
-	["Unstable Flask of the Bandit"] = true,
-	["Unstable Flask of the Beast"] = true,
-	["Unstable Flask of the Elder"] = true,
-	["Unstable Flask of the Sorcerer"] = true,
-	["Unstable Flask of the Soldier"] = true,
-	["Unstable Flask of the Physician"] = true,
+local flaskIds = {
+	-- WotLK
+	53760, 54212, 53758, 53755, 62380, 53752,
+	-- TBC
+	28521, 28518, 28519, 28540, 28520, 17629, 17627, 17628, 17626,
 }
+local flasks = nil
+local function generateFlaskMap()
+	flasks = {}
+	for i, id in next, flaskIds do
+		local n = GetSpellInfo(id)
+		if n then flasks[n] = true end
+	end
+	flaskIds = nil
+	generateFlaskMap = nil
+end
 
 local foods = {
-	["Well Fed"] = true,
-	["\"Well Fed\""] = true,
+	[(GetSpellInfo(44100))] = true,
+	[(GetSpellInfo(19706))] = true,
 }
 
 local texture = nil
@@ -58,9 +42,9 @@ function f:ADDON_LOADED(msg)
 	_G.FascistGnomeDB = _G.FascistGnomeDB or {}
 	self.db = _G.FascistGnomeDB
 	for k, v in pairs({
-		flaskTell = "FascistGnome: Flask reminder!",
-		foodTell = "FascistGnome: Well Fed reminder!",
-		expireTell = "FascistGnome: Food/flask expires soon!",
+		flaskTell = L["FascistGnome: Flask reminder!"],
+		foodTell = L["FascistGnome: Well Fed reminder!"],
+		expireTell = L["FascistGnome: Food/flask expires soon!"],
 		whisperAtReadyCheck = true,
 		whisperIfOfficer = true,
 		whisperIfLeader = true,
@@ -94,6 +78,7 @@ end
 
 local nofood, noflask, recheck = {}, {}, {}
 local function inspectUnit(unit, time)
+	if not flasks then generateFlaskMap() end
 	local flask, food = nil, nil
 	for j = 1, 40 do
 		local name, _, _, _, _, _, exp = UnitBuff(unit, j)
@@ -123,10 +108,10 @@ end
 
 local function printStatusReport()
 	if #nofood > 0 then
-		print("Missing food: " .. table.concat(nofood, ", ") .. ".")
+		print(L["Missing food: %s."]:format(table.concat(nofood, ", ")))
 	end
 	if #noflask > 0 then
-		print("Missing flask: " .. table.concat(noflask, ", ") .. ".")
+		print(L["Missing flask: %s."]:format(table.concat(noflask, ", ")))
 	end
 end
 

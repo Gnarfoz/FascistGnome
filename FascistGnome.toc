@@ -2,9 +2,13 @@
 ## Title: FascistGnome
 ## Author: Rabbit
 ## Notes: Prints a list of people missing either flask, elixirs or food buff every ready check.
-## OptionalDeps: ChatThrottleLib
+## OptionalDeps: ChatThrottleLib, Ace3
 ## SavedVariables: FascistGnomeDB
 
+libs\LibStub\Libstub.lua
+libs\AceLocale-3.0\AceLocale-3.0.xml
+
+locales.lua
 buffs.lua
 config.lua
 
