@@ -5,8 +5,10 @@
 ## OptionalDeps: ChatThrottleLib, Ace3
 ## SavedVariables: FascistGnomeDB
 
+#@no-lib-strip@
 libs\LibStub\Libstub.lua
 libs\AceLocale-3.0\AceLocale-3.0.xml
+#@end-no-lib-strip@
 
 locales.lua
 buffs.lua
