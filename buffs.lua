@@ -1,6 +1,8 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("FascistGnome")
 
 local flaskIds = {
+	-- Cataclysm
+	92679, 94160, 79469, 79470, 79471, 79472,
 	-- WotLK
 	53760, 54212, 53758, 53755, 62380, 53752,
 	-- TBC
