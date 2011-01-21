@@ -4,9 +4,9 @@ local flaskIds = {
 	-- Cataclysm
 	92679, 94160, 79469, 79470, 79471, 79472,
 	-- WotLK
-	53760, 54212, 53758, 53755, 62380, 53752,
+	-- 53760, 54212, 53758, 53755, 62380, 53752,
 	-- TBC
-	28521, 28518, 28519, 28540, 28520, 17629, 17627, 17628, 17626,
+	-- 28521, 28518, 28519, 28540, 28520, 17629, 17627, 17628, 17626,
 }
 local flasks = nil
 local function generateFlaskMap()
@@ -84,11 +84,12 @@ local function inspectUnit(unit, time)
 	local flask, food = nil, nil
 	for j = 1, 40 do
 		local name, _, _, _, _, _, exp = UnitBuff(unit, j)
-		if not name then break end
-		local timeLeft = -1 * (time - exp) / 60
-		if foods[name] then food = timeLeft end
-		if flasks[name] then flask = timeLeft end
-		if food and flask then break end
+		if name then
+			local timeLeft = -1 * (time - exp) / 60
+			if foods[name] then food = timeLeft end
+			if flasks[name] then flask = timeLeft end
+			if food and flask then break end
+		end
 	end
 	return flask, food
 end
