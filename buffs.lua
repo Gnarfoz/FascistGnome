@@ -85,9 +85,16 @@ local function inspectUnit(unit, time)
 	for j = 1, 40 do
 		local name, _, _, _, _, _, exp = UnitBuff(unit, j)
 		if name then
-			local timeLeft = -1 * (time - exp) / 60
-			if foods[name] then food = timeLeft end
-			if flasks[name] then flask = timeLeft end
+			if exp and exp > 0 then
+				local timeLeft = -1 * (time - exp) / 60
+				if foods[name] then food = timeLeft end
+				if flasks[name] then flask = timeLeft end
+			else
+				-- This buff is either an aura, or the unit is out of range
+				-- so we can't see the expiration time on his buffs.
+				if foods[name] then food = true end
+				if flasks[name] then flask = true end
+			end
 			if food and flask then break end
 		end
 	end
@@ -102,7 +109,7 @@ local function inspectRaid()
 			if not food then nofood[#nofood+1] = n end
 			if not flask then noflask[#noflask+1] = n end
 			if not food or not flask then recheck[#recheck+1] = n end
-			if (food and food < 5) or (flask and flask < 5) then
+			if (type(food) == "number" and food < 5) or (type(flask) == "number" and flask < 5) then
 				remind(n, f.db.expireTell)
 			end
 		end
