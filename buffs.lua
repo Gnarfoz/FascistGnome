@@ -1,6 +1,8 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("FascistGnome")
 
 local flaskIds = {
+	-- MOP
+	105693, 105689, 105696, 105694, 105691,
 	-- Cataclysm
 	92679, 94160, 79469, 79470, 79471, 79472,
 	-- WotLK
@@ -50,6 +52,7 @@ function f:ADDON_LOADED(msg)
 		whisperAtReadyCheck = true,
 		whisperIfOfficer = true,
 		whisperIfLeader = true,
+		whisperInLfr = false,
 		statusPrintAtReady = true,
 		partyWithTheGnome = true,
 	}) do
@@ -102,7 +105,8 @@ local function inspectUnit(unit, time)
 end
 local function inspectRaid()
 	local time = GetTime()
-	for i = 1, GetNumRaidMembers() do
+	
+	for i = 1, GetNumGroupMembers() do
 		local n = GetRaidRosterInfo(i)
 		if n then
 			local flask, food = inspectUnit(n, time)
@@ -144,6 +148,10 @@ end
 
 local rcTimeout = 0
 function f:READY_CHECK(sender, timeout)
+	if not self.db.whisperInLfr and IsPartyLFG() then
+		return
+	end
+
 	-- Track timeout locally because officers sometimes don't get the _FINISHED like they should. Yay.
 	-- +1 because half the time we get given 29 instead of 30. Blizzard strikes again.
 	rcTimeout = GetTime() + tonumber(timeout) + 1
@@ -156,7 +164,7 @@ function f:READY_CHECK(sender, timeout)
 	inspectRaid()
 
 	if self.db.whisperAtReadyCheck then
-		if (self.db.whisperIfLeader and IsRaidLeader()) or
+		if (self.db.whisperIfLeader and UnitIsGroupLeader("player")) or
 		   (self.db.whisperIfOfficer and UnitIsRaidOfficer("player")) or
 		   (not self.db.whisperIfLeader and not self.db.whisperIfOfficer) then
 			for i, player in next, noflask do

@@ -85,11 +85,14 @@ frame:SetScript("OnShow", function(frame)
 
 	local ifLeader = newCheckbox(L["If you are the leader"], "whisperIfLeader", true)
 	ifLeader:SetPoint("TOPLEFT", ifPromoted, "BOTTOMLEFT", 0, 0)
+	
+	local ifInLfr = newCheckbox(L["In LFR"], "whisperInLfr", true)
+	ifInLfr:SetPoint("TOPLEFT", ifLeader, "BOTTOMLEFT", 0, 0)
 
-	whisper.dependentControls = { ifPromoted, ifLeader }
+	whisper.dependentControls = { ifPromoted, ifLeader, ifInLfr }
 
 	local statusPrint = newCheckbox(L["Print local status reports"], "statusPrintAtReady")
-	statusPrint:SetPoint("TOPLEFT", ifLeader, "BOTTOMLEFT", -10, -8)
+	statusPrint:SetPoint("TOPLEFT", ifInLfr, "BOTTOMLEFT", -10, -8)
 
 	local party = newCheckbox(L["Party with the gnome"], "partyWithTheGnome")
 	party:SetPoint("TOPLEFT", statusPrint, "BOTTOMLEFT", 0, -8)
