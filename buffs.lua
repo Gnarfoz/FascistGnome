@@ -4,7 +4,7 @@ local flaskIds = {
 	-- MOP
 	105693, 105689, 105696, 105694, 105691,
 	-- Cataclysm
-	92679, 94160, 79469, 79470, 79471, 79472,
+	-- 92679, 94160, 79469, 79470, 79471, 79472,
 	-- WotLK
 	-- 53760, 54212, 53758, 53755, 62380, 53752,
 	-- TBC
@@ -53,6 +53,7 @@ function f:ADDON_LOADED(msg)
 		whisperIfOfficer = true,
 		whisperIfLeader = true,
 		whisperInLfr = false,
+		whisperOutsideInstances = false,
 		statusPrintAtReady = true,
 		partyWithTheGnome = true,
 	}) do
@@ -148,7 +149,7 @@ end
 
 local rcTimeout = 0
 function f:READY_CHECK(sender, timeout)
-	if not self.db.whisperInLfr and IsPartyLFG() then
+	if not self.db.whisperInLfr and IsPartyLFG() or not self.db.whisperOutsideInstances and IsInInstance() then
 		return
 	end
 
