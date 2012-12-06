@@ -149,7 +149,7 @@ end
 
 local rcTimeout = 0
 function f:READY_CHECK(sender, timeout)
-	if not self.db.whisperInLfr and IsPartyLFG() or not self.db.whisperOutsideInstances and IsInInstance() then
+	if not self.db.whisperInLfr and IsPartyLFG() or not IsInInstance() and not self.db.whisperOutsideInstances then
 		return
 	end
 
