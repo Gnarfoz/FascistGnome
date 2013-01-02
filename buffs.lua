@@ -1,8 +1,8 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("FascistGnome")
 
 local flaskIds = {
-	-- MOP
-	105693, 105689, 105696, 105694, 105691,
+	-- MOP, last one is Visions of Insanity (3x +500 stat) from http://www.wowhead.com/item=86569
+	105693, 105689, 105696, 105694, 105691, 127230,
 	-- Cataclysm
 	-- 92679, 94160, 79469, 79470, 79471, 79472,
 	-- WotLK
