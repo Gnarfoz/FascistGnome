@@ -186,6 +186,7 @@ f:SetScript("OnUpdate", function(self, elapsed)
 		self:READY_CHECK_FINISHED()
 	end
 
+--[[
 	if total <= 0 and self.db.partyWithTheGnome then
 		local rx = math.random(128, WorldFrame:GetWidth() - 128)
 		local ry = math.random(128, WorldFrame:GetHeight() - 128)
@@ -193,6 +194,7 @@ f:SetScript("OnUpdate", function(self, elapsed)
 		UIFrameFlash(texture, 0.5, 0.5, 1.6, false, 0.2, 0.4)
 		total = 1.7
 	end
+]]
 	total = total - elapsed
 end)
 f:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
