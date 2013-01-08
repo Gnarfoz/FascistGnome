@@ -26,7 +26,7 @@ local foods = {
 	[(GetSpellInfo(19706))] = true,
 }
 
-local texture = nil
+local texture, salute = nil, nil
 
 local hexColors = {}
 for k, v in pairs(RAID_CLASS_COLORS) do
@@ -62,15 +62,49 @@ function f:ADDON_LOADED(msg)
 		end
 	end
 
+	local rx = math.random(128, WorldFrame:GetWidth() - 128)
+	local ry = math.random(128, WorldFrame:GetHeight() - 128)
+
 	local t = UIParent:CreateTexture("FascistGnomeSalute", "OVERLAY")
 	t:SetTexture("Interface\\AddOns\\FascistGnome\\nazignome")
 	t:SetHeight(256)
 	t:SetWidth(256)
-	t:SetPoint("CENTER", UIParent)
+	t:SetPoint("CENTER", UIParent, "TOPLEFT", rx, -ry)
 	t:SetAlpha(0)
 	t:Hide()
 	texture = t
 	
+	salute = texture:CreateAnimationGroup()
+	salute:SetLooping("REPEAT")
+	local position = salute:CreateAnimation("Translation")
+	local fadeIn   = salute:CreateAnimation("Alpha")
+	local fadeOut  = salute:CreateAnimation("Alpha")
+
+--	local rx = math.random(128 - WorldFrame:GetWidth()/2, WorldFrame:GetWidth()/2 - 128)
+--	local ry = math.random(128 - WorldFrame:GetHeight()/2, WorldFrame:GetHeight()/2 - 128)
+	
+	position:SetOrder(1)
+--	position:SetOffset(rx, ry)
+	fadeIn:SetOrder(2)
+	fadeIn:SetChange(1)
+	fadeIn:SetDuration(0.5)
+	fadeIn:SetEndDelay(0.2)
+	fadeOut:SetOrder(3)
+	fadeOut:SetChange(-1)
+	fadeOut:SetDuration(0.5)
+	fadeOut:SetEndDelay(0.4)
+
+	salute:SetScript("OnPlay",     function() texture:Show() end)
+	salute:SetScript("OnFinished", function() texture:Hide() end)	
+	salute:SetScript("OnLoop",     function()
+		local rx = math.random(128, WorldFrame:GetWidth() - 128)
+		local ry = math.random(128, WorldFrame:GetHeight() - 128)
+		texture:SetPoint("CENTER", UIParent, "TOPLEFT", rx, -ry)
+--		local rx = math.random(128 - WorldFrame:GetWidth()/2, WorldFrame:GetWidth()/2 - 128)
+--		local ry = math.random(128 - WorldFrame:GetHeight()/2, WorldFrame:GetHeight()/2 - 128)
+--		position:SetOffset(rx, ry)
+	end )
+
 	self:UnregisterEvent("ADDON_LOADED")
 end
 
@@ -134,6 +168,10 @@ function f:READY_CHECK_FINISHED()
 	self:Hide()
 	-- Because these can get spammed when you leave raid/group (and because we can call this function due to timeout)
 	self:UnregisterEvent("READY_CHECK_FINISHED")
+	
+	if salute:IsPlaying() then 
+		salute:Finish()
+	end
 
 	if not self.db.statusPrintAtReady then return end
 	wipe(nofood); wipe(noflask)
@@ -158,8 +196,11 @@ function f:READY_CHECK(sender, timeout)
 	rcTimeout = GetTime() + tonumber(timeout) + 1
 
 	self:Show()
-
 	self:RegisterEvent("READY_CHECK_FINISHED")
+	
+	if self.db.partyWithTheGnome and not salute:IsPlaying() then
+		salute:Play()
+	end
 
 	wipe(nofood); wipe(noflask); wipe(recheck)
 	inspectRaid()
@@ -178,24 +219,11 @@ function f:READY_CHECK(sender, timeout)
 	end
 end
 
-local total = 0
 f:Hide()
-f:SetScript("OnHide", function() UIFrameFlashStop(texture) end)
 f:SetScript("OnUpdate", function(self, elapsed)
 	if GetTime() > rcTimeout then
 		self:READY_CHECK_FINISHED()
 	end
-
---[[
-	if total <= 0 and self.db.partyWithTheGnome then
-		local rx = math.random(128, WorldFrame:GetWidth() - 128)
-		local ry = math.random(128, WorldFrame:GetHeight() - 128)
-		texture:SetPoint("CENTER", UIParent, "TOPLEFT", rx, -ry)
-		UIFrameFlash(texture, 0.5, 0.5, 1.6, false, 0.2, 0.4)
-		total = 1.7
-	end
-]]
-	total = total - elapsed
 end)
 f:SetScript("OnEvent", function(self, event, ...) self[event](self, ...) end)
 f:RegisterEvent("READY_CHECK")
@@ -207,4 +235,3 @@ end
 ChatFrame_AddMessageEventFilter("CHAT_MSG_WHISPER_INFORM", filter)
 
 _G.FascistGnome = f
-
