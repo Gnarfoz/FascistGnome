@@ -106,11 +106,14 @@ frame:SetScript("OnShow", function(frame)
 	local food = newEditbox(L["Food whisper"], "foodTell")
 	food:SetPoint("TOPLEFT", flask, "BOTTOMLEFT", 0, -8)
 
-	local expire = newEditbox(L["Expire warning"], "expireTell")
-	expire:SetPoint("TOPLEFT", food, "BOTTOMLEFT", 0, -8)
+	local expireFlask = newEditbox(L["Flask expiry warning"], "flaskExpireTell")
+	expireFlask:SetPoint("TOPLEFT", food, "BOTTOMLEFT", 0, -8)
+	
+	local expireFood = newEditbox(L["Food expiry warning"], "foodExpireTell")
+	expireFood:SetPoint("TOPLEFT", expireFlask, "BOTTOMLEFT", 0, -8)
 
 	hint = frame:CreateFontString(nil, "ARTWORK", "GameFontHighlightSmall")
-	hint:SetPoint("TOPLEFT", expire, "BOTTOMLEFT", 0, -8)
+	hint:SetPoint("TOPLEFT", expireFood, "BOTTOMLEFT", 0, -8)
 	hint:SetWidth(frame:GetWidth() - 40)
 	hint:SetJustifyH("CENTER")
 	hint:SetText(L["|cff44ff44Press Enter to save or Escape to reset.|r"])

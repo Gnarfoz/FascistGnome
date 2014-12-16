@@ -53,7 +53,8 @@ function f:ADDON_LOADED(msg)
 	for k, v in pairs({
 		flaskTell = L["FascistGnome: Flask reminder!"],
 		foodTell = L["FascistGnome: Well Fed reminder!"],
-		expireTell = L["FascistGnome: Food/flask expires soon!"],
+		flaskExpireTell = L["FascistGnome: Flask expires soon!"],
+		foodExpireTell = L["FascistGnome: Food expires soon!"],
 		whisperAtReadyCheck = true,
 		whisperIfOfficer = true,
 		whisperIfLeader = true,
@@ -153,8 +154,11 @@ local function inspectRaid()
 			if not food then nofood[#nofood+1] = n end
 			if not flask then noflask[#noflask+1] = n end
 			if not food or not flask then recheck[#recheck+1] = n end
-			if (type(food) == "number" and food < 5) or (type(flask) == "number" and flask < 5) then
-				remind(n, f.db.expireTell)
+			if type(flask) == "number" and flask < 5 then
+				remind(n, f.db.flaskExpireTell)
+			end
+			if type(food) == "number" and food < 5 then
+				remind(n, f.db.foodExpireTell)
 			end
 		end
 	end
