@@ -1,8 +1,13 @@
 local L = LibStub("AceLocale-3.0"):GetLocale("FascistGnome")
 
 local flaskIds = {
+	-- WoD small (agi, int, sta, str)	
+	156073, 156070, 156077, 156071,
+	-- Whispers of Insanity: 176151, but nerfed to +100 primary stat (i.e. excluding spirit), so weaker than small flasks most of the time
+	-- WoD big (agi, int, sta, str)
+	156064, 156079, 156084, 156080,
 	-- MOP, last one is Visions of Insanity (3x +500 stat) from http://www.wowhead.com/item=86569
-	105693, 105689, 105696, 105694, 105691, 127230,
+	-- 105693, 105689, 105696, 105694, 105691, 127230,
 	-- Cataclysm
 	-- 92679, 94160, 79469, 79470, 79471, 79472,
 	-- WotLK
