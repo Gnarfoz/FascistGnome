@@ -1,4 +1,5 @@
-## Interface: 60000
+## Interface: 70000
+
 ## Title: FascistGnome
 ## Author: Rabbit
 ## Notes: Prints a list of people missing either flask, elixirs or food buff every ready check.
