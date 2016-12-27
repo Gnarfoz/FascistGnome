@@ -2,7 +2,7 @@ local L = LibStub("AceLocale-3.0"):GetLocale("FascistGnome")
 
 local flaskIds = {
 	-- Legion (agi, int, sta, str, dynamic)
-	188033, 188031, 188035, 188034, 188116
+	188033, 188031, 188035, 188034, 188116,
 	-- WoD small (agi, int, sta, str)	
 	156073, 156070, 156077, 156071,
 	-- Whispers of Insanity: 176151, but nerfed to +100 primary stat (i.e. excluding spirit), so weaker than small flasks most of the time
