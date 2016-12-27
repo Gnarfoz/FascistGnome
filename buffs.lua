@@ -4,10 +4,10 @@ local flaskIds = {
 	-- Legion (agi, int, sta, str, dynamic)
 	188033, 188031, 188035, 188034, 188116,
 	-- WoD small (agi, int, sta, str)	
-	156073, 156070, 156077, 156071,
+	-- 156073, 156070, 156077, 156071,
 	-- Whispers of Insanity: 176151, but nerfed to +100 primary stat (i.e. excluding spirit), so weaker than small flasks most of the time
 	-- WoD big (agi, int, sta, str)
-	156064, 156079, 156084, 156080,
+	-- 156064, 156079, 156084, 156080,
 	-- MOP, last one is Visions of Insanity (3x +500 stat) from http://www.wowhead.com/item=86569
 	-- 105693, 105689, 105696, 105694, 105691, 127230,
 	-- Cataclysm
